@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>WEB</title>
+</head>
+<body>
+    <h1>LAB7_WEB_102101611</h1><hr>
+    一、编程实现下发硬超时流表，实现拓扑内主机h1和h3网络中断20s。<br>
+    二、编程实现获取s1上实时的流表数，并通过添加和删除流表项（可用硬超时流表项为例）实现更新当
+    前交换机的实时流表数。<br>
+    三、编程实现获取上图的拓扑信息，包括主机、交换机和链路。
+    <form method="POST" action="/execute">
+    <button type="submit" name="script_name" value="连接odl">连接odl</button>
+    1.连接odl控制器<br>
+    <button type="submit" name="script_name" value="创建简单拓扑">创建简单拓扑</button>
+    2.再创建拓扑(sudo mn --topo=single,3 --controller=remote,ip=127.0.0.1,port=6633 --switch ovsk,protocols=OpenFlow13)<br>
+        <button type="submit" name="script_name" value="下发硬超时流表">下发硬超时流表</button>
+    3.下发硬超时流表(20s)<br>
+        <button type="submit" name="script_name" value="删除流表项">删除流表项</button><br>
+        <button type="submit" name="script_name" value="获取流表数">获取流表数</button><br>
+        <button type="submit" name="script_name" value="获取拓扑信息">获取拓扑信息</button>
+        <hr>
+        一、编程复现前序VLAN实验且可查看前序VLAN实验的拓扑信息，包括主机、交换机和链路，以及显示
+每台交换机的所有流表项。<br>
+        <button type="submit" name="script_name" value="连接ryu">连接ryu</button>
+        连接ryu控制器<br>
+        <button type="submit" name="script_name" value="创建拓扑">创建拓扑</button>
+        hosts:h1 h2 h3 h4 &nbsp&nbsp&nbsp&nbsp 
+        switches:s1 s2 &nbsp&nbsp&nbsp&nbsp 
+        links:(s1, h1) (s1, h2) (s1, s2) (s2, h3) (s2, h4) <br>
+        <button type="submit" name="script_name" value="划分VLAN">划分VLAN</button>
+        (VLAN_ID: &nbsp 0 &nbsp&nbsp Hosts: &nbsph1 &nbsph3 
+        &nbsp&nbsp&nbsp&nbsp 
+        VLAN_ID: &nbsp 1 &nbsp&nbsp Hosts: &nbsph2 &nbsph4 )<br>
+        <button type="submit" name="script_name" value="查看拓扑信息">查看拓扑信息</button><br>
+        <button type="submit" name="script_name" value="清理拓扑">清理拓扑</button>
+        (sudo mn -c:密码在执行Flask应用的terminal输入)
+    </form>
+    <hr>
+    <div id="output">
+       执行结果将显示在这里:
+    </div>
+    
+    <script>
+        // 获取表单和输出元素的引用
+        var executeForm = document.querySelector('form');
+        var outputDiv = document.getElementById('output');
+
+        // 在表单提交时触发异步请求
+        executeForm.addEventListener('submit', function (e) {
+            e.preventDefault(); // 阻止默认的表单提交行为
+            var button = document.activeElement;
+            var scriptName = button.value;
+
+            outputDiv.innerHTML = '执行中...';
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/execute', true);
+            xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    outputDiv.innerHTML = `执行的操作: (${scriptName}): ` + xhr.responseText;
+                }
+            };
+            xhr.send(JSON.stringify({ script_name: scriptName }));
+        });
+    </script>
+</body>
+</html>
+
